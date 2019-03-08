@@ -1,0 +1,55 @@
+{
+  "name": "new",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "engines": {
+    "node": "10.x"
+  },
+  "dependencies": {
+    "@mapbox/togeojson": "0.16.0",
+    "express": "^4.16.4",
+    "helmet": "^3.15.1",
+    "leaflet": "1.4.0",
+    "react": "16.8.4",
+    "react-dom": "16.8.4",
+    "react-leaflet": "2.2.1",
+    "react-scripts": "^2.1.8",
+    "react-use": "5.5.5",
+    "xmldom": "0.1.27"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "@types/leaflet": "1.4.3",
+    "@types/node": "^11.10.5",
+    "@types/react": "^16.8.7",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-leaflet": "2.2.0",
+    "@types/xmldom": "0.1.29",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^2.6.3",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "compile-server": "tsc --project tsconfig.server.json",
+    "copy-file": "cp server/free-tram-zone.kml dist",
+    "run-server": "node dist/index.js -p $PORT",
+    "start": "NODE_ENV=production npm run run-server",
+    "start:client": "react-scripts start",
+    "start:server": "NODE_ENV=development run-s build:server run-server",
+    "build": "run-p build:client build:server",
+    "build:client": "react-scripts build",
+    "build:server": "run-s clean compile-server copy-file",
+    "heroku-postbuild": "NODE_ENV=production npm run build"
+  },
+  "proxy": "http://localhost:8080",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "license": "MIT"
+}
