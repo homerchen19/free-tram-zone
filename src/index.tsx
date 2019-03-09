@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import ReactGA from 'react-ga';
 
-import Map from './map';
+import Map from './Map';
 
 ReactGA.initialize('UA-135887227-1');
 
