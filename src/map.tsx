@@ -38,42 +38,46 @@ const Map: React.FunctionComponent<{}> = () => {
     longitude: number;
   } = useGeolocation();
 
-  const userPosition: [number, number] = [latitude, longitude];
+  const geolocationWorks = !loading && latitude && longitude;
+  const userPosition: [number | null, number | null] = [latitude, longitude];
+
   const centerUserPosition = React.useCallback(() => {
     map.current.leafletElement.panTo(userPosition);
   }, [userPosition]);
 
   return (
-    !loading && (
-      <LeafletMap
-        ref={map}
-        center={[-37.814958, 144.960667]}
-        zoom={15}
-        touchZoom={true}
-        style={{ height: '100vh' }}
-      >
-        <Control position="topleft">
-          <CenterButton onClick={centerUserPosition} />
-        </Control>
-        <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <LeafletMap
+      ref={map}
+      center={[-37.814958, 144.960667]}
+      zoom={15}
+      touchZoom={true}
+      style={{ height: '100vh' }}
+    >
+      {geolocationWorks && (
+        <>
+          <Control position="topleft">
+            <CenterButton onClick={centerUserPosition} />
+          </Control>
+          <Marker position={userPosition} icon={userIcon} />
+        </>
+      )}
+      <TileLayer
+        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {kmlData && (
+        <GeoJSON
+          data={kmlData}
+          style={() => ({
+            color: '#cce231',
+            opacity: 0.8,
+            weight: 6,
+            fillColor: '#75c43e',
+            fillOpacity: 0.4,
+          })}
         />
-        <Marker position={userPosition} icon={userIcon} />
-        {kmlData && (
-          <GeoJSON
-            data={kmlData}
-            style={() => ({
-              color: '#cce231',
-              opacity: 0.8,
-              weight: 6,
-              fillColor: '#75c43e',
-              fillOpacity: 0.4,
-            })}
-          />
-        )}
-      </LeafletMap>
-    )
+      )}
+    </LeafletMap>
   );
 };
 
