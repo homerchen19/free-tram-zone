@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {
-  Map as LeafletMap,
-  TileLayer,
-  Marker,
-  Popup,
-  GeoJSON,
-} from 'react-leaflet';
-import { useGeolocation, useMount } from 'react-use';
+import { Map as LeafletMap, TileLayer, Marker, GeoJSON } from 'react-leaflet';
+import Control from 'react-leaflet-control';
+import { icon } from 'leaflet';
+import { useGeolocation } from 'react-use';
+
+import CenterButton from './CenterButton';
+import iconUrl from './icon.svg';
 
 const fetchGeoJson = async (setKmlData: React.Dispatch<any>) => {
   const response = await fetch('/api/geo-json');
@@ -15,7 +14,14 @@ const fetchGeoJson = async (setKmlData: React.Dispatch<any>) => {
   setKmlData(body.data);
 };
 
+const userIcon = icon({
+  iconUrl,
+  iconSize: [80, 80],
+  iconAnchor: [40, 40],
+});
+
 const Map: React.FunctionComponent<{}> = () => {
+  const map = React.useRef(null);
   const [kmlData, setKmlData] = React.useState(null);
 
   React.useEffect(() => {
@@ -32,22 +38,40 @@ const Map: React.FunctionComponent<{}> = () => {
     longitude: number;
   } = useGeolocation();
 
-  const position: [number, number] = [latitude, longitude];
+  const userPosition: [number, number] = [latitude, longitude];
+  const centerUserPosition = React.useCallback(() => {
+    map.current.leafletElement.panTo(userPosition);
+  }, [userPosition]);
 
   return (
-    !loading &&
-    kmlData && (
-      <LeafletMap center={position} zoom={15} style={{ height: '100vh' }}>
+    !loading && (
+      <LeafletMap
+        ref={map}
+        center={[-37.814958, 144.960667]}
+        zoom={15}
+        touchZoom={true}
+        style={{ height: '100vh' }}
+      >
+        <Control position="topleft">
+          <CenterButton onClick={centerUserPosition} />
+        </Control>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <GeoJSON data={kmlData} />
+        <Marker position={userPosition} icon={userIcon} />
+        {kmlData && (
+          <GeoJSON
+            data={kmlData}
+            style={() => ({
+              color: '#cce231',
+              opacity: 0.8,
+              weight: 6,
+              fillColor: '#75c43e',
+              fillOpacity: 0.4,
+            })}
+          />
+        )}
       </LeafletMap>
     )
   );
