@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import centerIcon from './center.png';
-
 interface Props {
   onClick: () => void;
 }
@@ -24,7 +22,10 @@ const CenterButton: React.FunctionComponent<Props> = ({ onClick }) => {
       }}
       onClick={onClick}
     >
-      <img src={centerIcon} style={{ width: '100%' }} />
+      <img
+        src={`${process.env.PUBLIC_URL}/center.png`}
+        style={{ width: '100%' }}
+      />
     </button>
   );
 };

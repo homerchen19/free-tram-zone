@@ -5,7 +5,6 @@ import { icon } from 'leaflet';
 import { useGeolocation } from 'react-use';
 
 import CenterButton from './CenterButton';
-import iconUrl from './icon.svg';
 
 const fetchGeoJson = async (setKmlData: React.Dispatch<any>) => {
   const response = await fetch('/api/geo-json');
@@ -15,7 +14,7 @@ const fetchGeoJson = async (setKmlData: React.Dispatch<any>) => {
 };
 
 const userIcon = icon({
-  iconUrl,
+  iconUrl: `${process.env.PUBLIC_URL}/icon.svg`,
   iconSize: [80, 80],
   iconAnchor: [40, 40],
 });
